@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Chamado #{{ chamado.id }}</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <div class="container topbar-content">
+
+        <div>
+            <h1>Sistema de Chamados</h1>
+            <p>Controle de suporte técnico</p>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="{{ url_for('chamados') }}">Chamados</a>
+            <a href="{{ url_for('logout') }}">Sair</a>
+        </nav>
+
+    </div>
+
+</header>
+
+<main class="container">
+
+    <section class="page-header">
+
+        <div>
+            <span class="page-label">CHAMADO #{{ chamado.id }}</span>
+
+            <h2>{{ chamado.titulo }}</h2>
+
+            <p>
+                Aberto em {{ chamado.data_abertura }}
+            </p>
+        </div>
+
+        <span class="badge status-{{ chamado.status|lower|replace(' ', '-') }}">
+            {{ chamado.status }}
+        </span>
+
+    </section>
+
+    <div class="details-grid">
+
+        <section class="card">
+
+            <div class="card-header">
+                <h3>Informações do chamado</h3>
+            </div>
+
+            <div class="details-content">
+
+                <div class="detail-item">
+                    <span>Usuário</span>
+                    <strong>{{ chamado.usuario }}</strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Categoria</span>
+                    <strong>{{ chamado.categoria }}</strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Prioridade</span>
+
+                    <strong>
+                        <span class="badge priority-{{ chamado.prioridade|lower }}">
+                            {{ chamado.prioridade }}
+                        </span>
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Data de abertura</span>
+                    <strong>{{ chamado.data_abertura }}</strong>
+                </div>
+
+                {% if chamado.data_fechamento %}
+                    <div class="detail-item">
+                        <span>Data de fechamento</span>
+                        <strong>{{ chamado.data_fechamento }}</strong>
+                    </div>
+                {% endif %}
+
+                <div class="detail-description">
+
+                    <span>Descrição</span>
+
+                    <p>{{ chamado.descricao }}</p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        {% if session["usuario_perfil"] == "analista" %}
+
+        <section class="card">
+
+            <div class="card-header">
+                <h3>Atualizar chamado</h3>
+            </div>
+
+            <form
+                method="POST"
+                action="{{ url_for('atualizar_chamado', chamado_id=chamado.id) }}"
+            >
+
+                <div class="form-group">
+
+                    <label for="status">
+                        Status
+                    </label>
+
+                    <select
+                        id="status"
+                        name="status"
+                        required
+                    >
+
+                        <option
+                            value="Aberto"
+                            {% if chamado.status == "Aberto" %}selected{% endif %}
+                        >
+                            Aberto
+                        </option>
+
+                        <option
+                            value="Em andamento"
+                            {% if chamado.status == "Em andamento" %}selected{% endif %}
+                        >
+                            Em andamento
+                        </option>
+
+                        <option
+                            value="Resolvido"
+                            {% if chamado.status == "Resolvido" %}selected{% endif %}
+                        >
+                            Resolvido
+                        </option>
+
+                        <option
+                            value="Fechado"
+                            {% if chamado.status == "Fechado" %}selected{% endif %}
+                        >
+                            Fechado
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary btn-full"
+                >
+                    Atualizar status
+                </button>
+
+            </form>
+
+        </section>
+
+        <section class="card">
+
+            <div class="card-header">
+                <h3>Registrar solução</h3>
+            </div>
+
+            <form
+                method="POST"
+                action="{{ url_for('registrar_solucao', chamado_id=chamado.id) }}"
+            >
+
+                <div class="form-group">
+
+                    <label for="descricao">
+                        Solução aplicada
+                    </label>
+
+                    <textarea
+                        id="descricao"
+                        name="descricao"
+                        rows="6"
+                        placeholder="Descreva a solução aplicada..."
+                        required
+                    ></textarea>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary btn-full"
+                >
+                    Registrar solução
+                </button>
+
+            </form>
+
+        </section>
+
+        {% endif %}
+
+        <section class="card">
+
+            <div class="card-header">
+                <h3>Histórico de soluções</h3>
+            </div>
+
+            {% if solucoes %}
+
+                <div class="solution-list">
+
+                    {% for solucao in solucoes %}
+
+                        <article class="solution">
+
+                            <div class="solution-date">
+                                {{ solucao.data_registro }}
+                            </div>
+
+                            <p>
+                                {{ solucao.descricao }}
+                            </p>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state small">
+                    <p>Nenhuma solução registrada.</p>
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </div>
+
+</main>
+
+</body>
+</html>

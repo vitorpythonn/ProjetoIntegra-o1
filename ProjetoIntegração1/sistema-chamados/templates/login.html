@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login - Sistema de Chamados</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body class="auth-page">
+
+    <main class="auth-container">
+
+        <section class="auth-card">
+
+            <div class="auth-header">
+                <div class="logo">SC</div>
+
+                <h1>Sistema de Chamados</h1>
+
+                <p>Controle de suporte técnico</p>
+            </div>
+
+            {% if request.args.get("cadastro") == "sucesso" %}
+                <div class="alert alert-success">
+                    Cadastro realizado com sucesso. Faça login para continuar.
+                </div>
+            {% endif %}
+
+            {% if erro %}
+                <div class="alert alert-error">
+                    {{ erro }}
+                </div>
+            {% endif %}
+
+            <form method="POST">
+
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="seu@email.com"
+                        required
+                        autofocus
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+
+                    <input
+                        type="password"
+                        id="senha"
+                        name="senha"
+                        placeholder="Digite sua senha"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">
+                    Entrar
+                </button>
+
+            </form>
+
+            <div class="auth-footer">
+                <span>Ainda não possui uma conta?</span>
+
+                <a href="{{ url_for('cadastro') }}">
+                    Cadastre-se
+                </a>
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Chamados - Sistema de Chamados</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+    <header class="topbar">
+
+        <div class="container topbar-content">
+
+            <div>
+                <h1>Sistema de Chamados</h1>
+                <p>Controle de suporte técnico</p>
+            </div>
+
+            <nav class="nav-menu">
+
+                <a href="{{ url_for('chamado') }}">
+                    + Novo chamado
+                </a>
+
+                <a href="{{ url_for('logout') }}">
+                    Sair
+                </a>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+    <main class="container">
+
+        <section class="page-header">
+
+            <div>
+                <span class="page-label">PAINEL</span>
+
+                <h2>Chamados</h2>
+
+                <p>
+                    Olá, {{ session["usuario_nome"] }}.
+                    Consulte os chamados registrados.
+                </p>
+            </div>
+
+            <div class="total-card">
+                <span>Total</span>
+                <strong>{{ chamados|length }}</strong>
+            </div>
+
+        </section>
+
+        <section class="card">
+
+            {% if chamados %}
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>ID</th>
+                                <th>Chamado</th>
+                                <th>Categoria</th>
+                                <th>Prioridade</th>
+                                <th>Status</th>
+                                <th>Usuário</th>
+                                <th>Abertura</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for chamado in chamados %}
+
+                                <tr>
+
+                                    <td>
+                                        <a
+                                            href="{{ url_for('detalhes_chamado', chamado_id=chamado.id) }}"
+                                            class="ticket-id">
+                                            #{{ chamado.id }}
+                                        </a>
+                                    </td>
+
+                                    <td>
+
+                                        <div class="ticket-title">
+                                            {{ chamado.titulo }}
+                                        </div>
+
+                                        <div class="ticket-description">
+                                            {{ chamado.descricao }}
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+                                        {{ chamado.categoria }}
+                                    </td>
+
+                                    <td>
+                                        <span class="badge priority-{{ chamado.prioridade|lower }}">
+                                            {{ chamado.prioridade }}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="badge status-{{ chamado.status|lower|replace(' ', '-') }}">
+                                            {{ chamado.status }}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        {{ chamado.usuario }}
+                                    </td>
+
+                                    <td>
+                                        {{ chamado.data_abertura }}
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">!</div>
+
+                    <h3>Nenhum chamado encontrado</h3>
+
+                    <p>
+                        Ainda não existem chamados cadastrados.
+                    </p>
+
+                    <a
+                        href="{{ url_for('chamado') }}"
+                        class="btn btn-primary"
+                    >
+                        Abrir chamado
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+</body>
+</html>
